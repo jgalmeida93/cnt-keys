@@ -1,7 +1,7 @@
 "use client";
 
 import { addDoc, collection } from "firebase/firestore";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { db } from "../firebase";
 import { Formik } from "formik";
@@ -64,7 +64,7 @@ export default function Register() {
   const onSubmit = async (e: FormProps) => {
     const { name, key } = e;
     try {
-      const docRef = await addDoc(collection(db, "musics"), {
+      await addDoc(collection(db, "musics"), {
         name: name,
         key: key,
       });

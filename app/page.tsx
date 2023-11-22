@@ -1,8 +1,18 @@
 "use client";
 
-import { doc, collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  startAt,
+} from "firebase/firestore";
 import { db } from "./firebase";
 import { useEffect, useState } from "react";
+import { Card } from "./components/Card";
+
+const musicRef = collection(db, "musics");
+const q = query(musicRef, orderBy("name"), startAt("nome"));
 
 type MusicProps = {
   id: string;
@@ -12,6 +22,7 @@ type MusicProps = {
 
 export default function Home() {
   const [musics, setMusics] = useState<MusicProps[]>();
+  const [search, setSearch] = useState("");
 
   const querySnapshot = async () => {
     await getDocs(collection(db, "musics")).then((querySnapshot) => {
@@ -24,34 +35,44 @@ export default function Home() {
   };
 
   const renderCard = (name: string, key: string) => {
-    return (
-      <div className="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-        <h5 className="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50">
-          {name}
-        </h5>
-        <p className="mb-4 text-base text-neutral-600 dark:text-neutral-200">
-          {key}
-        </p>
-      </div>
-    );
+    return <Card name={name} tom={key} />;
+  };
+
+  const handleSearch = async () => {
+    await getDocs(q).then((querySnapshot) => {
+      const newData = querySnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log(newData);
+    });
   };
 
   useEffect(() => {
     querySnapshot();
+    handleSearch();
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between sm:p-24 p-4">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <h1 className="text-4xl p-4 text-center">Céu na terra</h1>
+    <main className="flex w-full flex-col">
+      <div className="flex w-full">
+        <input
+          id="search"
+          name="search"
+          type="search"
+          placeholder="Buscar música"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-[80%] m-auto my-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        />
+      </div>
 
-        <div>
-          {musics?.map((music) => (
-            <div className="flex" key={music.id}>
-              {renderCard(music.name, music.key)}
-            </div>
-          ))}
-        </div>
+      <div className="flex p-10 flex-wrap justify-between mx-auto">
+        {musics?.map((music) => (
+          <div className="flex m-2" key={music.id}>
+            {renderCard(music.name, music.key)}
+          </div>
+        ))}
       </div>
     </main>
   );
