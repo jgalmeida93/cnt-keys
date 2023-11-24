@@ -6,6 +6,8 @@ import {
   query,
   orderBy,
   startAt,
+  where,
+  queryEqual,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { useEffect, useState } from "react";
@@ -48,9 +50,26 @@ export default function Home() {
     });
   };
 
+  const handleFilter = async (searchParam) => {
+    const q = query(
+      collection(db, "musics"),
+      where("name", ">=", searchParam),
+      where("name", "<=", searchParam + "~")
+    );
+
+    const querySnapshotTest = await getDocs(q);
+
+    querySnapshotTest.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+
+    return querySnapshotTest;
+  };
+
   useEffect(() => {
     querySnapshot();
     handleSearch();
+    handleFilter("Nome");
   }, []);
 
   return (
