@@ -27,7 +27,10 @@ const formSchema = z.object({
     })
     .min(2)
     .max(50),
-  key: z.string().min(1).max(4),
+  key: z
+    .string()
+    .min(1)
+    .max(4),
 });
 
 export default function InsertMusics() {
@@ -65,7 +68,7 @@ export default function InsertMusics() {
   return (
     <div className="container mx-auto">
       <Navbar />
-      <div className="container w-1/2 py-20">
+      <div className="container lg:w-1/2 lg:py-20 md:py-15 py-10">
         <h2 className="pb-10">Cadastro de músicas</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
