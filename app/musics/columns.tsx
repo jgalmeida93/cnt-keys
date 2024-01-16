@@ -1,9 +1,7 @@
 "use client";
 
+import { EditUser } from "@/components/Modal/EditUser";
 import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-
-import { Pencil2Icon } from "@radix-ui/react-icons";
 
 export type Musics = {
   id: string;
@@ -27,9 +25,7 @@ export const columns: ColumnDef<Musics>[] = [
     cell: ({ row }) => {
       return (
         <div className="w-px">
-          <Button>
-            <Pencil2Icon className="mr-2 h-4 w-4" /> Editar
-          </Button>
+          <EditUser data={row.original} />
         </div>
       );
     },

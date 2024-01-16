@@ -18,8 +18,7 @@ export async function POST(req: Request) {
     name: values.name,
     key: values.key,
   });
-  // await Music.create({ name, key });
-  const musicCreated = await music.save();
+  await music.save();
 
   return NextResponse.json({ message: "Music added" }, { status: 201 });
 }

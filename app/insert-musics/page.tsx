@@ -18,11 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Navbar } from "@/components/Navbar";
-import { CheckIcon } from "@radix-ui/react-icons";
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50),
-  key: z.string().min(1).max(3),
+  name: z
+    .string({
+      required_error: "O nome da música é obrigatório",
+      invalid_type_error: "O nome não pode conter caracteres especiais",
+    })
+    .min(2)
+    .max(50),
+  key: z.string().min(1).max(4),
 });
 
 export default function InsertMusics() {
@@ -86,10 +91,14 @@ export default function InsertMusics() {
                 <FormItem>
                   <FormLabel>Tom</FormLabel>
                   <FormControl>
-                    <Input placeholder="Tom da música" {...field} />
+                    <Input
+                      maxLength={4}
+                      placeholder="Tom da música"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
-                    Certifique-se de digitaro o tom corretamente
+                    Certifique-se de digitar o tom corretamente
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
